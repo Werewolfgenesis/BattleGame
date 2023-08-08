@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import GameComponent from './components/GameComponent.vue'
+import HeaderComponent from './components/HeaderComponent.vue'
 </script>
 
 <template>
-  <header>
+  <!-- <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
@@ -14,10 +14,19 @@ import TheWelcome from './components/TheWelcome.vue'
 
   <main>
     <TheWelcome />
-  </main>
+  </main> -->
+  <div style="display: block; background-color: #333">
+    <HeaderComponent />
+    <body>
+      <GameComponent />
+    </body>
+  </div>
 </template>
 
 <style scoped>
+body {
+  background-image: url('./assets/battle.jpg');
+}
 header {
   line-height: 1.5;
 }
