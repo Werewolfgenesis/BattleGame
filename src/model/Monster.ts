@@ -1,9 +1,13 @@
-export class Hero {
+import { Hero } from './Hero.ts'
+
+export class Monster {
+  name: string
   healthPoints: number
   attackDamage: number
   currentLevel: number
 
   constructor() {
+    this.name = 'Monster'
     this.healthPoints = 100
     this.attackDamage = 25
     this.currentLevel = 0

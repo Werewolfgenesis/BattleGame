@@ -1,12 +1,21 @@
+<script setup lang="ts">
+import V1GameComponent from './1v1GameComponent.vue'
+import HistoryComponent from './HistoryComponent.vue'
+import PVEGameComponent from './PVEGameComponent.vue'
+</script>
+
 <template>
   <header>
-    <ul style="display: inline">
-      <li><a href="/">Restart game</a></li>
-    </ul>
+    <div>
+      <b-tabs content-class="mt-3" fill style="background-color: azure">
+        <b-tab title="PVE" active><PVEGameComponent /></b-tab>
+        <b-tab title="1v1 Game"><V1GameComponent player1-name="Mitko" player2-name="Gio" /></b-tab>
+        <b-tab title="History"><HistoryComponent /></b-tab>
+      </b-tabs>
+    </div>
   </header>
 </template>
-
-<style scoped>
+<!-- <style scoped>
 ul {
   list-style-type: none;
   margin: 0;
@@ -31,4 +40,4 @@ li a {
 li a:hover {
   background-color: #111;
 }
-</style>
+</style> -->

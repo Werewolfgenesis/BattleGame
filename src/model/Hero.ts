@@ -1,3 +1,5 @@
+import { Monster } from './Monster'
+
 export class Hero {
   healthPoints: number
   name: string
@@ -27,12 +29,15 @@ export class Hero {
     this.specialAttackDamage = 1.2 * this.maxDamage
   }
 
-  attack(enemy: Hero): number {
+  attack(enemy: Hero | Monster): number {
     const attackDamage = Math.floor(
       Math.random() * (this.maxDamage - this.minDamage + 1) + this.minDamage
     )
     enemy.healthPoints -= attackDamage
     if (this.cdTurns > 0) this.cdTurns--
+    if (enemy instanceof Monster) {
+      this.healthPoints -= enemy.attackDamage
+    }
 
     return attackDamage
   }
@@ -42,7 +47,7 @@ export class Hero {
     if (this.cdTurns > 0) this.cdTurns--
   }
 
-  specialAttack(enemy: Hero) {
+  specialAttack(enemy: Hero | Monster) {
     if (this.cdTurns == 0) {
       this.cdTurns = 2
       enemy.healthPoints -= this.specialAttackDamage

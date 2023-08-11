@@ -9,7 +9,13 @@ const props = defineProps({
 </script>
 
 <template>
-  <button :id="props.id" type="button" @click="props.action" :disabled="props.disabled">
+  <b-button
+    :id="props.id"
+    type="button"
+    @click="props.action"
+    :disabled="props.disabled"
+    variant="primary"
+  >
     {{ props.text }}
-  </button>
+  </b-button>
 </template>

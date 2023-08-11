@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import GameComponent from './components/GameComponent.vue'
 import HeaderComponent from './components/HeaderComponent.vue'
 </script>
 
@@ -16,24 +15,15 @@ import HeaderComponent from './components/HeaderComponent.vue'
     <TheWelcome />
   </main> -->
   <div style="display: block; background-color: #333">
-    <HeaderComponent />
     <body>
-      <GameComponent />
+      <HeaderComponent />
     </body>
   </div>
 </template>
 
 <style scoped>
-body {
-  background-image: url('./assets/battle.jpg');
-}
 header {
   line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
 }
 
 @media (min-width: 1024px) {

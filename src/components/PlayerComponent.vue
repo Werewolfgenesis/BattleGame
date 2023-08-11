@@ -1,19 +1,21 @@
 <script setup lang="ts">
+import { Game } from '@/model/Game'
 import { Hero } from '@/model/Hero'
-import { computed, onMounted, ref } from 'vue'
-import GenericButtonComponent from './GenericButtonComponent.vue'
+import { Monster } from '@/model/Monster'
+import { onMounted, ref } from 'vue'
+import { useGamesStore } from '../stores/historyStore'
+import GenericButtonComponent from './generics/GenericButtonComponent.vue'
 const props = defineProps({
-  enemy: { type: Hero, required: true },
+  enemy: { type: [Hero, Monster], required: true },
   name: { type: String, required: true },
   imageUrl: { type: String, required: true }
 })
 const getImageUrl = () => {
-  // This path must be correct for your file
   return new URL(`../assets/${props.imageUrl}`, import.meta.url).toString()
 }
 
 const getImageId = () => {
-  return props.name + 'HeroImg'
+  return props.name + 'Image'
 }
 
 const getHealthbarId = () => {
@@ -33,14 +35,12 @@ const getHealId = () => {
 }
 
 let player1: Hero
-let players: Hero[]
+//let players: Hero[]
 let disabled = ref(false)
-const disableButtons = computed(() => {
-  return false
-})
+const store = useGamesStore()
 onMounted(() => {
   player1 = new Hero(props.name)
-  players = [player1, props.enemy]
+  //players = [player1, props.enemy]
 })
 let currentPlayerOnTurnIdx = 0
 
@@ -49,13 +49,24 @@ const attack = () => {
 
   const attackDamage = player1.attack(props.enemy)
   recalcPlayerHealthBar(props.enemy)
-
   logBattleEvent('Damage inflicted by ' + player1.name + ': ' + attackDamage)
+  if (props.enemy instanceof Monster) {
+    if (props.enemy.healthPoints <= 0) {
+      logBattleEvent('Final attack by monster upon dying: ' + props.enemy.attackDamage)
+      props.enemy.attack(player1)
+    }
+    recalcPlayerHealthBar(player1)
+    if (player1.healthPoints <= 0 && props.enemy.healthPoints <= 0) {
+      logBattleEvent('Tie! Monster killed ' + player1.name + ' with his last attack!')
+      store.games.push(new Game(player1, 5))
+      return
+    }
+  }
 
   props.enemy.healthPoints <= 0 ? win(player1) : nextTurn()
 }
 
-const specialAttack = (attacker: Hero, defender: Hero) => {
+const specialAttack = (attacker: Hero, defender: Hero | Monster) => {
   attacker.specialAttack(defender)
   recalcPlayerHealthBar(defender)
 
@@ -82,13 +93,16 @@ const logBattleEvent = (text: string) => {
 }
 
 const win = (winner: Hero) => {
+  let game = new Game(winner, 5)
+
+  store.games.push(game)
   logBattleEvent(winner.name + " wins! Press 'Restart game' to play again")
   if (winner == props.enemy) {
     let player2Img = document.getElementById(getImageId()) as HTMLImageElement
     // //player2Img.innerHTML = '<img id= "player2Img" src="../assets/hero-mirrored-dead.png" />'
     player2Img.classList.add('dead')
   } else if (winner == player1) {
-    let player1Img = document.getElementById(props.enemy.name + 'HeroImg') as HTMLImageElement
+    let player1Img = document.getElementById(props.enemy.name + 'Image') as HTMLImageElement
     // //player1Img.innerHTML = '<img id= "player2Img" src="../assets/hero-dead.png" />'
     player1Img.classList.add('dead')
   }
@@ -146,8 +160,9 @@ const heroOnEndOfTurn = (hero: Hero) => {
     // }
   }
 }
-const recalcPlayerHealthBar = (hero: Hero) => {
+const recalcPlayerHealthBar = (hero: Hero | Monster) => {
   const id = hero == player1 ? getHealthbarId() : props.enemy.name + 'Healthbar'
+  console.log(id)
   let playerHealthBar = document.getElementById(id) as HTMLProgressElement
   playerHealthBar.value = hero.healthPoints
   if (playerHealthBar.value <= 40) {
